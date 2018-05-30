@@ -11,7 +11,7 @@ To function correctly, TgTake2 must be given certain information.
 
 The primary is the project directory - must exist
 
-``
+```
 --project=<any-path>
 ```
 
