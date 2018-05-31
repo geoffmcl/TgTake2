@@ -539,10 +539,10 @@ void tabElevations::on_download_clicked()
     // ================================================
     QString tmp;
     //QString url = "http://dds.cr.usgs.gov";
-    QString url = "http://dds.cr.usgs.gov/srtm/version2_1/SRTM3/";
+    QString url = "http://dds.cr.usgs.gov";    //  srtm / version2_1 / SRTM3 / ";
     // Africa/ Australia / Eurasia / Islands / North_America / South_America /
     bool opnd = false;
-    outLog("Base URL: " + url + "/srtm/");
+    outLog("Base URL: " + url);
     // openBrowser(url + "/srtm/"); // open the link on a QThread - no time lost on main thread...
     QString info;
     QString runtime = toolWget; // get 'wget' tool
@@ -591,18 +591,29 @@ void tabElevations::on_download_clicked()
     QString file;        // file name only
     QString outfile;     // fully qualified file name
     int skipped = 0;
+    int argcount = 0;
     m_zipList.clear();
+    int srtmcount = 0;
     QMap<QString, QString>::iterator i2 = main->m_tabSetup->m_pwsu->wSrtmList.begin();
     for (; i2 != main->m_tabSetup->m_pwsu->wSrtmList.end(); i2++) {
+        srtmcount++;
         // QString val = i2.value(); // get the URL
         QString val = i2.key(); // get the file name
         // if we have a URL for this SRTM item...
         if (val.size()) {
+            QString url1;
             QString key = i2.key(); // get the SRTM we want
             file = key + ".hgt.zip";  // build the 'file'
-                                        // outLog(key+": "+val);
+            // outLog(key+": "+val);
+            // need a url for downloading - 
+            // of the form http://dds.cr.usgs.gov/srtm/version2_1/SRTM3/<region>/S18W150/S18W150.hgt.zip ...
+            if (!srtm_getUrlForHgtBase(key, url1)) {
+                skipped++;
+                continue;
+            }
             argument = runtime + " "; // the 'tested' agreed wget tool
-            argument += url + "/" + val + "/" + file; // add what we want...
+            //argument += url + url1 + "/" + val + "/" + file; // add what we want...
+            argument += url + url1 + "/" + file; // add what we want...
             outfile = m_srtmDir + "/" + file;
             allList += argument;
             // if (skip_exist_zip && util_isinFileList(allZips,file))
@@ -611,15 +622,75 @@ void tabElevations::on_download_clicked()
                 continue;
             }
             argList += argument; // wget request argument
-            filList += file;
+            filList += outfile;
+            argcount++;
         }
+    }
+
+    if (!argcount) {
+        msg.sprintf("Download click, with srtm %d, but no 'wget' args to run... skipped %d... exit", srtmcount, skipped);
+        outLog(msg);
+        return;
     }
 
     outLog("Full wget argument list, which may include those already downloaded");
     outLog(allList.join("\n"));
+    outLog(filList.join("\n"));
 
-    msg = "Download HGT:on_download_clicked: TODO: ***TBD*** handle download of HGT zip file...\n";
-    outLog(msg);
+    // msg = "Download HGT:on_download_clicked: TODO: ***TBD*** handle download of HGT zip file...\n";
+    // outLog(msg);
+    int i;
+    bool do_wait;
+    int ext;
+    QFile f;
+    int wait_secs = 10;
+    for (i = 0; i < argList.size(); i++) {
+        if (m_User_Break)
+            break;
+        do_wait = (skip_cfm ? false : true);
+        msg.sprintf("%d of %d: ", (i + 1), argList.size());
+        argument = argList[i];
+
+        file = filList[i];
+        outfile = file;
+        outLog(msg + "Downloading [" + file + "] with arg [" + argument + "]");
+
+        // YUK, 'wget' needs params to overwrite existing,
+        // but that gets complicated, so...
+        ext = tg_renameToOLDBAK(outfile); // rename any exsiting
+        //outArg(argument);
+        info = tg_runProcess(argument, m_srtmDir, &res);
+        tg_trimLongMessage(m_MaxDiag, info);
+        info += "\nFile " + file + " ";
+        if (f.exists(outfile)) {
+            // was this an already existing
+            if (allZips.indexOf(outfile) == -1)
+                info += "DOWNLOADED\n"; // no, is NEW download
+            else
+                info += "RE-DOWNLOAD\n";
+            m_zipList += outfile;
+        }
+        else {
+            if (!ign_errors)
+                do_wait = true;
+            info += "failed (does not exist)\n";
+        }
+        info += "\n";
+        outLog(info);
+        if (do_wait) {
+            if ((i + 1) < argList.size()) {
+                info += msg + "Continue with next download?";
+                res = util_getYesNo("DONE DOWNLOAD", info, this);
+                if (!res)
+                    return; // down hgt - done one, but no cfm to proceeed
+            }
+        }
+        else {
+            tg_openNonModalDialog("DOWNLOAD INFORMATION", info, wait_secs, this);
+        }
+    }
+
+
 #if 0 // ===========================
     QStringList m_zipList;
     // ***TBD*** actDownload, on_download_clicked() "Download HGT";
@@ -841,6 +912,24 @@ void tabElevations::on_download_clicked()
 
 void tabElevations::on_unzip_clicked() {
     // ***TBD*** // connect(actUnzipHGT,SIGNAL(clicked()),this,SLOT(on_unzip_clicked()));   // = new QPushButton("Unzip HGT",this);
+    QStringList m_zipList;
+    int srtmcount = 0;
+    QString file,outfile;
+    QMap<QString, QString>::iterator i2 = main->m_tabSetup->m_pwsu->wSrtmList.begin();
+    for (; i2 != main->m_tabSetup->m_pwsu->wSrtmList.end(); i2++) {
+        // QString val = i2.value(); // get the URL
+        QString val = i2.key(); // get the file name
+                                // if we have a URL for this SRTM item...
+        if (val.size()) {
+            QString url1;
+            QString key = i2.key(); // get the SRTM we want
+            file = key + ".hgt.zip";  // build the 'file'
+            outfile = m_srtmDir + "/" + file;
+            srtmcount++;
+            m_zipList += outfile;
+        }
+    }
+    size_t zips = m_zipList.size();
 }
 
 /* 
