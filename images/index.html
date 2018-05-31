@@ -1,35 +1,30 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
  <head>
-  <meta http-equiv="Content-Language"
-        content="en-gb">
-  <meta http-equiv="Content-Type"
-        content="text/html; charset=us-ascii">
+  <meta charset="utf-8">
   <meta name="generator"
         content="genimgindex.pl">
   <meta name="keywords"
         content=
-        "geoff, mclane, geoffmclane, computer, consultant, programmer, FlightGear, SimGear, PLIB, zlib, openal, pthreads, freeglut, openscenegraph">
+        "geoff, mclane, geoffmclane, computer, consultant, programmer, FlightGear, SimGear, terragear, zlib, openal, pthreads, freeglut, openscenegraph">
   <meta name="description"
-        content="FlightGear Build Center Image Index">
+        content="TerraGear Build Center">
   <title>
-   Image Index
+   TgTake2 - GUI to run TG tools
   </title>
   <link rel="stylesheet"
         type="text/css"
         href="fgcode.css">
-  <style type="text/css">
-<!-- /* some added styles, if any */
+  <style>
+/* some added styles, ... */
 .ctr { text-align:center; }
-  -->
+h1 { text-align:center; }
   </style>
  </head>
  <body>
-  <h1 align="center">
-  <a name="top"
-     id="top"></a>
-   Image Index
+  <h1>
+  <a id="top"></a>
+   TgTake2 - GUI to run TG tools
   </h1>
 
   <p class="ctr">
@@ -38,23 +33,27 @@
   </p>
 
   <p>
-     <b>2016/10/24</b>: This is a list of 6 images
-   Click on the image to load the full image in a new window.
+   <p><b>20180531</b>: This is some brief help on running TgTake2... it start 
+     <b>2016/10/24</b>: with list of 6 images - click to new window - which starts
+     with choosing an output directory - everything built will be deposited here...
   </p>
   <div align="center">
    <center>
     <table border="2"
            cellpadding="2"
            id="Num1"
-           summary="Table of Images">
+           summary="screen1">
      <tr>
-      <th>
-       Image
-      </th>
+      <td class="ctr">
+       <a href="#setup">Setup</a> <a href="#elevations">Elevation</a> <a href="#terrain">Terrain</a>
+       <a href="#airports">Airports</a> <a href="#construction">Construction</a> <a href="#advanced">Advanced</a>
+      </td>
      </tr>
 
      <tr>
       <td align="center" valign="top">
+      <a id="setup"></a>
+      <h1>Setup Screen</h1>
        <a target="_blank"
            href="setup.jpg"
            name="setup"><img src="setup.jpg"
@@ -62,11 +61,23 @@
             height="600"
             alt="setup.jpg 669x744 index 6">
        </a>
+       <p>Here we setup some basic runtime folders - the project folder, where all will be written - must exist,
+       dir of TG Tools, FG Root, HGT Root, and choose the location, here as -17.637, -194.94 to -17.45, -149.733, that is centered on -17.5436, -149.6365, width 0.207, height 0.187. This then establishes the HGT, S16W148, 1x1 block, begins to estimate what will be needed.
+       </p>
       </td>
      </tr>
      
      <tr>
+      <td class="ctr">
+       <a href="#setup">Setup</a> <a href="#elevations">Elevation</a> <a href="#terrain">Terrain</a>
+       <a href="#airports">Airports</a> <a href="#construction">Construction</a> <a href="#advanced">Advanced</a>
+     </td>
+     </tr>
+     
+     <tr>
       <td align="center" valign="top">
+      <a id="elevations"></a>
+      <h1>Elevations - HGT/DEM</h1>
        <a target="_blank"
            href="elevations.jpg"
            name="elevations"><img src="elevations.jpg"
@@ -74,11 +85,22 @@
             height="600"
             alt="elevations.jpg 667x740 index 4">
        </a>
+      <p>Get the elevations of the area of interest. Download HGT, unzip, decode the hgt, run terrafit...
+      </p>
       </td>
+     </tr>
+     
+     <tr>
+      <td class="ctr">
+       <a href="#setup">Setup</a> <a href="#elevations">Elevation</a> <a href="#terrain">Terrain</a>
+       <a href="#airports">Airports</a> <a href="#construction">Construction</a> <a href="#advanced">Advanced</a>
+     </td>
      </tr>
 
      <tr>
       <td align="center" valign="top">
+      <a id="terrain"></a>
+      <h1>Landuse</h1>
        <a target="_blank"
            href="landuse.jpg"
            name="landuse"><img src="landuse.jpg"
@@ -88,9 +110,18 @@
        </a>
       </td>
      </tr>
+     
+     <tr>
+      <td class="ctr">
+       <a href="#setup">Setup</a> <a href="#elevations">Elevation</a> <a href="#terrain">Terrain</a>
+       <a href="#airports">Airports</a> <a href="#construction">Construction</a> <a href="#advanced">Advanced</a>
+     </td>
+     </tr>
 
      <tr>
       <td align="center" valign="top">
+      <a id="airports"></a>
+      <h1>Airports</h1>
        <a target="_blank"
            href="airports.jpg"
            name="airports"><img src="airports.jpg"
@@ -100,9 +131,18 @@
        </a>
       </td>
      </tr>
+     
+     <tr>
+      <td class="ctr">
+       <a href="#setup">Setup</a> <a href="#elevations">Elevation</a> <a href="#terrain">Terrain</a>
+       <a href="#airports">Airports</a> <a href="#construction">Construction</a> <a href="#advanced">Advanced</a>
+     </td>
+     </tr>
 
      <tr>
       <td align="center" valign="top">
+      <a id="construction"></a>
+      <h1>Construction</h1>
        <a target="_blank"
            href="construction.jpg"
            name="construction"><img src="construction.jpg"
@@ -112,9 +152,18 @@
        </a>
       </td>
      </tr>
+     
+     <tr>
+      <td class="ctr">
+       <a href="#setup">Setup</a> <a href="#elevations">Elevation</a> <a href="#terrain">Terrain</a>
+       <a href="#airports">Airports</a> <a href="#construction">Construction</a> <a href="#advanced">Advanced</a>
+     </td>
+     </tr>
 
      <tr>
       <td align="center" valign="top">
+      <a id="advanced"></a>
+      <h1>Advanced</h1>
        <a target="_blank"
            href="advanced.jpg"
            name="advanced"><img src="advanced.jpg"
@@ -123,6 +172,13 @@
             alt="advanced.jpg 667x741 index 1">
        </a>
       </td>
+     </tr>
+     
+     <tr>
+      <td class="ctr">
+       <a href="#setup">Setup</a> <a href="#elevations">Elevation</a> <a href="#terrain">Terrain</a>
+       <a href="#airports">Airports</a> <a href="#construction">Construction</a> <a href="#advanced">Advanced</a>
+     </td>
      </tr>
 
     </table>
