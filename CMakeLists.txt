@@ -59,6 +59,7 @@ else ()
 endif ()
 
 add_definitions( -DTGT2_VERSION="${TGT2_MAJOR}.${TGT2_MINOR}.${TGT2_POINT}" )
+add_definitions( -DTGT2_DATE="${TGTAKE2_DATE}" )
 
 # Allow developers to select if Dynamic or static libraries are built.
 set( LIB_TYPE STATIC )  # set default static

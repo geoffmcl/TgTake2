@@ -7,9 +7,13 @@
 #ifndef APP_CONFIG_H
 #define APP_CONFIG_H
 
+// move to github
+#define PGM_VERSION TGT2_VERSION
+#define PGM_DATE    TGT2_DATE
+
 // move to try Ubuntu development
-#define PGM_VERSION "0.0.3"
-#define PGM_DATE    "2011-09-02"
+// #define PGM_VERSION "0.0.3"
+// #define PGM_DATE    "2011-09-02"
 
 // doing the Setup page, and dealing with the exit
 // when in the SRTM count service
