@@ -20,6 +20,45 @@ if(COMMAND cmake_policy)
     endif()
 endif()
 
+#------------------------------------------------------------------------
+# Release Information
+#   Release version and date are found in `version.txt`; update *that*
+#   file when required. It will be read into variable `versionFile`
+#   (stripping any newlines or spaces). This file must be formatted into
+#   two lines: the dot-separated MAJOR.MINOR.POINT version, followed by
+#   the date separated YEAR.MONTH.DAY release date.
+#------------------------------------------------------------------------
+file(READ version.txt versionFile)
+
+if (NOT versionFile)
+    message(FATAL_ERROR "Unable to determine libtidy version. version.txt file is missing.")
+endif()
+
+string(STRIP "${versionFile}" VERSION_TEXT)
+string(REGEX REPLACE "(.*)[\r\n|\n](.*)" "\\1" TGTAKE2_VERSION ${VERSION_TEXT})
+string(REGEX REPLACE "(.*)[\r\n|\n](.*)" "\\2" TGTAKE2_DATE ${VERSION_TEXT})
+
+# Establish version number
+if (TGTAKE2_VERSION)
+    string(REPLACE "." ";" VERSION_LIST ${TGTAKE2_VERSION})
+    list(GET VERSION_LIST 0 TGT2_MAJOR)
+    list(GET VERSION_LIST 1 TGT2_MINOR)
+    list(GET VERSION_LIST 2 TGT2_POINT)
+else ()
+    message(FATAL_ERROR "*** FAILED to get a VERSION from version.txt!")
+endif ()   
+ 
+# Establish version date
+if (TGTAKE2_DATE)
+    string(REPLACE "." ";" DATE_LIST ${TGTAKE2_DATE})
+    list(GET DATE_LIST 0 tgt2_YEAR)
+    list(GET DATE_LIST 1 tdt2_MONTH)
+    list(GET DATE_LIST 2 tdt2_DAY)
+else ()
+    message(FATAL_ERROR "*** FAILED to get a DATE from version.txt!")
+endif ()
+
+add_definitions( -DTGT2_VERSION="${TGT2_MAJOR}.${TGT2_MINOR}.${TGT2_POINT}" )
 
 # Allow developers to select if Dynamic or static libraries are built.
 set( LIB_TYPE STATIC )  # set default static
