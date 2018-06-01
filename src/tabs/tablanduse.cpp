@@ -253,7 +253,7 @@ tabLanduse::tabLanduse(QWidget *parent) :
     QGroupBox *actionGroup = new QGroupBox(tr("Actions"),this);
     mainLayout->addWidget(actionGroup);
 
-    QHBoxLayout *actionLayout = new QHBoxLayout(this);
+    QHBoxLayout *actionLayout = new QHBoxLayout;
     actionLayout->setContentsMargins(left, top, right, bott);
     actionLayout->setSpacing(spac);
     actionGroup->setLayout(actionLayout);
@@ -274,7 +274,7 @@ tabLanduse::tabLanduse(QWidget *parent) :
     QGroupBox *infoGroup = new QGroupBox(tr("Information"),this);
     mainLayout->addWidget(infoGroup);
 
-    QVBoxLayout *infoLayout = new QVBoxLayout(this);
+    QVBoxLayout *infoLayout = new QVBoxLayout;
     infoLayout->setContentsMargins(left, top, right, bott);
     infoLayout->setSpacing(spac);
     infoGroup->setLayout(infoLayout);

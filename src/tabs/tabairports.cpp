@@ -78,7 +78,7 @@ tabAirports::tabAirports(QWidget *parent) :
     QGroupBox *limitGroup = new QGroupBox(tr("Choose Limit Type"),this);
     mainLayout->addWidget(limitGroup);
 
-    QHBoxLayout *layoutButtons = new QHBoxLayout(this);
+    QHBoxLayout *layoutButtons = new QHBoxLayout;
     layoutButtons->setContentsMargins(10, 0, 10, 0);
     layoutButtons->setSpacing(0);
     limitGroup->setLayout(layoutButtons);
@@ -105,7 +105,7 @@ tabAirports::tabAirports(QWidget *parent) :
     QGroupBox *currGroup = new QGroupBox(tr("Current Limits - change on Setup page"),this);
     mainLayout->addWidget(currGroup);
 
-    QGridLayout *limitLayout = new QGridLayout(this);
+    QGridLayout *limitLayout = new QGridLayout;
     limitLayout->setContentsMargins(left, top, right, bott);
     limitLayout->setSpacing(spac);
     currGroup->setLayout(limitLayout);
@@ -217,7 +217,7 @@ tabAirports::tabAirports(QWidget *parent) :
     QGroupBox *optionGroup = new QGroupBox(tr("Options"),this);
     mainLayout->addWidget(optionGroup);
 
-    QGridLayout *optionLayout = new QGridLayout(this);
+    QGridLayout *optionLayout = new QGridLayout;
     optionLayout->setContentsMargins(left, top, right, bott);
     optionLayout->setSpacing(spac);
     optionGroup->setLayout(optionLayout);
@@ -250,7 +250,7 @@ tabAirports::tabAirports(QWidget *parent) :
     QGroupBox *actionGroup = new QGroupBox(tr("Actions"),this);
     mainLayout->addWidget(actionGroup);
 
-    QHBoxLayout *layoutActions = new QHBoxLayout(this);
+    QHBoxLayout *layoutActions = new QHBoxLayout;
     layoutActions->setContentsMargins(10, 0, 10, 0);
     layoutActions->setSpacing(0);
     actionGroup->setLayout(layoutActions);
@@ -265,7 +265,7 @@ tabAirports::tabAirports(QWidget *parent) :
     QGroupBox *infoGroup = new QGroupBox(tr("Information"),this);
     mainLayout->addWidget(infoGroup);
 
-    QVBoxLayout *infoLayout = new QVBoxLayout(this);
+    QVBoxLayout *infoLayout = new QVBoxLayout;
     infoLayout->setContentsMargins(left, top, right, bott);
     infoLayout->setSpacing(spac);
     infoGroup->setLayout(infoLayout);

@@ -31,7 +31,7 @@ tabConstruction::tabConstruction(QWidget *parent) :
     QGroupBox *limitGroup = new QGroupBox(tr("Choose Limit Type"),this);
     mainLayout->addWidget(limitGroup);
 
-    QHBoxLayout *layoutButtons = new QHBoxLayout(this);
+    QHBoxLayout *layoutButtons = new QHBoxLayout;
     layoutButtons->setContentsMargins(10, 0, 10, 0);
     layoutButtons->setSpacing(0);
     limitGroup->setLayout(layoutButtons);
@@ -60,7 +60,7 @@ tabConstruction::tabConstruction(QWidget *parent) :
     QGroupBox *currGroup = new QGroupBox(tr("Current Limits - change on Setup page"),this);
     mainLayout->addWidget(currGroup);
 
-    QGridLayout *limitLayout = new QGridLayout(this);
+    QGridLayout *limitLayout = new QGridLayout;
     limitLayout->setContentsMargins(left, top, right, bott);
     limitLayout->setSpacing(spac);
     currGroup->setLayout(limitLayout);
@@ -118,7 +118,7 @@ tabConstruction::tabConstruction(QWidget *parent) :
     col++;
     limitLayout->addWidget(oneInfo,row,col,1,max_col-2);
 
-    QHBoxLayout *layoutBox = new QHBoxLayout(this);
+    QHBoxLayout *layoutBox = new QHBoxLayout;
     layoutBox->setContentsMargins(0, 0, 0, 0);
     layoutBox->setSpacing(0);
 
@@ -201,7 +201,7 @@ tabConstruction::tabConstruction(QWidget *parent) :
     QGroupBox *infoGroup = new QGroupBox(tr("Information"),this);
     mainLayout->addWidget(infoGroup);
 
-    QVBoxLayout *infoLayout = new QVBoxLayout(this);
+    QVBoxLayout *infoLayout = new QVBoxLayout;
     infoLayout->setContentsMargins(left, top, right, bott);
     infoLayout->setSpacing(spac);
     infoGroup->setLayout(infoLayout);
@@ -210,6 +210,7 @@ tabConstruction::tabConstruction(QWidget *parent) :
     infoEdit->setReadOnly(true);
 
     infoLayout->addWidget(infoEdit);
+    /* end tabConstruction */
 
 }
 

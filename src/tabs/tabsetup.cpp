@@ -252,7 +252,7 @@ tabSetup::tabSetup(QWidget *parent) :
     QGroupBox *infoGroup = new QGroupBox(tr("Information"),this);
     mainLayout->addWidget(infoGroup);
 
-    QVBoxLayout *infoLayout = new QVBoxLayout(this);
+    QVBoxLayout *infoLayout = new QVBoxLayout;
     infoLayout->setContentsMargins(left, top, right, bott);
     infoLayout->setSpacing(spac);
     infoGroup->setLayout(infoLayout);
