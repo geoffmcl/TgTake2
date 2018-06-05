@@ -10,3 +10,6 @@ TgTake2_autogen/*
 bldlog-1.txt
 cmake_install.cmake
 x64/*
+.vs/*
+*.VC.db
+*.user
