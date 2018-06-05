@@ -690,231 +690,62 @@ void tabElevations::on_download_clicked()
         }
     }
 
-
-#if 0 // ===========================
-    QStringList m_zipList;
-    // ***TBD*** actDownload, on_download_clicked() "Download HGT";
-    int i;
-    int srtmcnt2 = qmSRTM2URL2.count();
-    // minElev and maxElev set
-    outLog(elevList); /* provide a 'helpful' list of SRTM files */
-    info = "\ndownload the SRTM in the range [" + minElev + "] to [" + maxElev + "]";
-    info += "\nA list of the ranges should be in the templog.txt file";
-    info += "\nWhen the zips are downloaded they should be expanded into a\ndirectory of your choice before running 'decode hgt'.";
-    int count2 = util_checkSRTMFiles2(qmSRTM2URL2);
-
-    // ===============================================
-#if (defined(TGS_DEBUG_VERS) && defined(USE_FILE_INTERFACE)) // but outputs extra info to the log file
-    QString m_appDir = "C:/Qt/2010.05/qt/projects/TgScenery";
-    int count = util_checkSRTMFiles(qmSRTM2URL,m_appDir);
-    // DEBUG - a file read versus the new 'internal' data functions
-    // these two functions should ABSOLUTELY yield the SAME result ;=))
-    // and DEBUG is only if they are NOT '=='
-    if (count2 != count) {
-        {
-            msg.sprintf("Cnt %d of %d", count2, qmSRTM2URL2.size());
-            outLog("List of elevations found in 2 "+msg);
-            QMap<QString, QString>::iterator ii = qmSRTM2URL2.begin();
-            for ( ; ii != qmSRTM2URL2.end(); ii++) {
-                QString val = ii.value();
-                if (val.size()) {
-                    QString key = ii.key();
-                    outLog(key+": "+val);
-                }
-            }
-        }
-        {
-            msg.sprintf("Cnt %d of %d", count, qmSRTM2URL.size());
-            outLog("List of elevations found in 1 "+msg);
-            QMap<QString, QString>::iterator ii = qmSRTM2URL.begin();
-            for ( ; ii != qmSRTM2URL.end(); ii++) {
-                QString val = ii.value();
-                if (val.size()) {
-                    QString key = ii.key();
-                    outLog(key+": "+val);
-                }
-            }
-        }
-    }
-#endif // #ifdef TGS_DEBUG_VERS // but outputs extra info to the log file
-    // ok, we proceed with the DOWNLOAD of the desired HGT files
-    // to the temp/hgt directory...
-    //QString tm;
-    QStringList argList; // list of arguments to run
-    QStringList filList; // and 'information' file list
-    QStringList allList; // all arguments
-    QString file;        // file name only
-    QString outfile;     // fully qualified file name
-    QString argument;    // build each argument
-    QString runtime = toolWget; // get 'wget' tool
-    // QStringList zipList;
-    QString tmp;
-    QFile f;
-    int ext, res;
-    int skipped = 0;
-    int wait_secs = main->m_tabAdvanced->delayEdit->text().toInt();
-    if (wait_secs < 1) wait_secs = 1;
-    bool do_wait;
-
-    // check the wget tool functions
-    if (runtime.contains(QChar(' ')))
-        runtime = "\""+runtime+"\"";
-    argument = runtime;
-    argument += " --help";
-    res = tg_testApplication(argument, info);
-    if (res || m_Verify_Tools) {
-        tg_trimLongMessage(m_MaxDiag, info);
-        tmp.sprintf("\nTool returned value %d",res);
-        info += tmp;
-        info += "\nThe name (and location if not in your PATH)";
-        info += "\nis set on the 'Advanced' pages.";
-        outLog(info);
-        info += "\n\nClick 'Yes' to continue to use this tool.";
-        res = util_getYesNo("DOWNLOAD TOOL",info,this);
-        if (!res)
-            return; // elevation download tool NOT acceptable
-    }
-
-    // BUILD THE ARGUMENT LIST
-    m_zipList.clear();
-    QMap<QString, QString>::iterator i2 = qmSRTM2URL2.begin();
-    for ( ; i2 != qmSRTM2URL2.end(); i2++) {
-        QString val = i2.value(); // get the URL
-        // if we have a URL for this SRTM item...
-        if (val.size()) {
-            QString key = i2.key(); // get the SRTM we want
-            file = key+".hgt.zip";  // build the 'file'
-            // outLog(key+": "+val);
-            argument = runtime+" "; // the 'tested' agreed wget tool
-            argument += url+val+"/"+file; // add what we want...
-            outfile = m_srtmDir+"/"+file;
-            allList += argument;
-            // if (skip_exist_zip && util_isinFileList(allZips,file))
-            if (skip_exist_zip && (allZips.indexOf(outfile) != -1)) {
-                skipped++;
-                continue;
-            }
-            argList += argument; // wget request argument
-            filList += file;
-        }
-    }
-
-    outLog("Full wget argument list, which may include those already downloaded");
-    outLog(allList.join("\n"));
-
-    if (count2 == 0) {
-        msg.sprintf("Of the desired %d HGT elevation files, found NONE!", srtmcnt2);
-    } else if (count2 < srtmcnt2) {
-        msg.sprintf("Of the possible %d HGT elevation files, found URL for %d ", srtmcnt2, count2);
-        msg += "\nIt must be remembered there will be NO elevation files for ocean areas, so this could be the correct count of what is needed.";
-    } else {
-        msg.sprintf("Found the URL for ALL the desired %d HGT elevation files.", srtmcnt2);
-    }
-    if (opnd) {
-        msg += "\nIn any case the URL should be open in your browser, so you could MANUALLY do downloads.\n";
-        //msg += info;
-    }
-    msg += "\nBut alternatively all 'wget' arguments have been output\nto the LOG file so you could run these in the \n["+m_srtmDir+"] directory";
-
-    if (skip_exist_zip && skipped) {
-        argument.sprintf("\n\nDue to skip existing checked, skipping %d, leaving %d for download", skipped, argList.size());
-        msg += argument;
-    }
-    if (skip_cfm) {
-        msg += "\nOption 'Skip confirmation' checked, so this will be the only confirmation.";
-        if (ign_errors)
-            msg += "\nand will also not confirm on a download error.";
-        else
-            msg += "\nbut will confirm if a download error detected.";
-    } else {
-        msg += "\nOption 'Skip confirmation' is not checked, so will confirm after each download.";
-    }
-    if (argList.count() == 0) {
-        msg += "\n\nAdvice only, since there is no work to do. Click either...";
-    } else {
-        msg += "\n\nDo you want to CONTINUE with this download?";
-    }
-
-    res = 0;
-    if (b_confirm) {
-        outLog("CONFIRMATION TO PROCEED");
-        outLog(msg);
-        res = util_getYesNo("CONFIRMATION TO PROCEED", msg, this);
-    } else if ( argList.count() == 0 ) {
-        int secs = (wait_secs > 5) ? wait_secs : 5;
-        tg_openNonModalDialog("NO WORK TO DO",msg,secs,this);
-    }
-    if (!res || (argList.count()==0)) {
-       return; // down hgt - no confirmation to proceed, or NO arguments
-    }
-    // got the set of download arguments to run...
-    // and the name of the desired file
-    m_User_Break = false;
-    for (i = 0; i < argList.size(); i++) {
-        if (m_User_Break)
-            break;
-        do_wait = (skip_cfm ? false : true);
-        msg.sprintf("%d of %d: ", (i+1), argList.size());
-        argument = argList[i];
-        file = filList[i];
-        outfile = m_srtmDir+"/"+file;
-        outLog(msg+"Downloading ["+file+"] with arg ["+argument+"]");
-        // YUK, 'wget' needs params to overwrite existing,
-        // but that gets complicated, so...
-        ext = tg_renameToOLDBAK(outfile); // rename any exsiting
-        //outArg(argument);
-        info = tg_runProcess(argument,m_srtmDir,&res);
-        tg_trimLongMessage(m_MaxDiag, info);
-        info += "\nFile "+file+" ";
-        if (f.exists(outfile)) {
-            // was this an already existing
-            if (allZips.indexOf(outfile) == -1)
-                info += "DOWNLOADED\n"; // no, is NEW download
-            else
-                info += "RE-DOWNLOAD\n";
-            m_zipList += outfile;
-        } else {
-            if (!ign_errors)
-                do_wait = true;
-            info += "failed (does not exist)\n";
-        }
-        info += "\n";
-        outLog(info);
-        if (do_wait) {
-            if ((i + 1) < argList.size()) {
-                info += msg+"Continue with next download?";
-                res = util_getYesNo("DONE DOWNLOAD",info,this);
-                if (!res)
-                    return; // down hgt - done one, but no cfm to proceeed
-            }
-        } else {
-            tg_openNonModalDialog("DOWNLOAD INFORMATION",info,wait_secs,this);
-        }
-    }
-
     // done the LAST, or aborted by user
     msg.sprintf("%d of %d: ", i, argList.size());
     if (m_User_Break)
-        info += "\nUser abort"+msg;
+        info += "\nUser abort" + msg;
     else
-        info += "\nDone "+msg;
+        info += "\nDone " + msg;
     if (i == argList.size()) {
         info += "\nThe next step would be to do the UNZIPPING?";
-    } else {
+    }
+    else {
         info += "\nIt seems the download is unfinished!";
         info += "\nThat needs to be completed before the UNZIPPING?";
     }
     m_User_Break = false;
     wait_secs = (wait_secs > 5) ? wait_secs : 5;
-    tg_openNonModalDialog("DONE HGT ZIP DOWNLOAD",info,wait_secs,this);
-#endif // 0
+    tg_openNonModalDialog("DONE HGT ZIP DOWNLOAD", info, wait_secs, this);
+
 }
 
-void tabElevations::on_unzip_clicked() {
+void tabElevations::on_unzip_clicked() 
+{
     // ***TBD*** // connect(actUnzipHGT,SIGNAL(clicked()),this,SLOT(on_unzip_clicked()));   // = new QPushButton("Unzip HGT",this);
-    QStringList m_zipList;
+    bool m_Verify_Tools = main->m_tabAdvanced->verifyCheck->isChecked();
+    int m_MaxDiag = main->m_tabAdvanced->maxEdit->text().toInt();
+    QString toolunzip(main->m_tabAdvanced->unzipEdit->text());
+    bool b_confirm = main->m_tabAdvanced->confirmCheck->isChecked();
+    QString msg, tmp;
+    QString info;
+    QString runtime = toolunzip; // get 'unzip' tool
+    QString argument;    // build each argument
+                         // check the wget tool functions
+    if (runtime.contains(QChar(' ')))
+        runtime = "\"" + runtime + "\"";
+    argument = runtime;
+    argument += " --help";
+    int res = tg_testApplication(argument, info);
+    if (res || m_Verify_Tools) {
+        tg_trimLongMessage(m_MaxDiag, info);
+        tmp.sprintf("\nTool returned value %d", res);
+        info += tmp;
+        info += "\nThe name (and location if not in your PATH)";
+        info += "\nis set on the 'Advanced' pages.";
+        outLog(info);
+        info += "\n\nClick 'Yes' to continue to use this tool.";
+        res = util_getYesNo("DOWNLOAD TOOL", info, this);
+        if (!res)
+            return; // elevation download tool NOT acceptable
+    }
+    QByteArray ba = toolunzip.toLatin1();
+    const char *c_str2 = ba.data();
+    msg.sprintf("Unzip HGT clicked... unzip=%s\n", c_str2);
+    outLog(msg, 3);  
+    QStringList m_zipList, m_outList;
     int srtmcount = 0;
-    QString file,outfile;
+    QString file, outfile, outhgt;
+    QFile f;
     QMap<QString, QString>::iterator i2 = main->m_tabSetup->m_pwsu->wSrtmList.begin();
     for (; i2 != main->m_tabSetup->m_pwsu->wSrtmList.end(); i2++) {
         // QString val = i2.value(); // get the URL
@@ -923,13 +754,87 @@ void tabElevations::on_unzip_clicked() {
         if (val.size()) {
             QString url1;
             QString key = i2.key(); // get the SRTM we want
-            file = key + ".hgt.zip";  // build the 'file'
+            file = key + ".hgt";  // build the 'file'
+            outhgt = m_srtmDir + "/" + file;
+            file += ".zip";
             outfile = m_srtmDir + "/" + file;
-            srtmcount++;
-            m_zipList += outfile;
+            if (f.exists(outfile)) {
+                srtmcount++;
+                m_zipList += outfile;
+                m_outList += outhgt;
+            }
         }
     }
-    size_t zips = m_zipList.size();
+    QStringList allZips = findFiles(m_srtmDir, QStringList() << "*.zip", false);
+    QStringList allHGT = findFiles(m_srtmDir, QStringList() << "*.hgt", false);
+    int zips = m_zipList.size();
+    int allzip = allZips.size();
+    int allhgt = allHGT.size();
+    msg.sprintf("Found %d, all %d, hgt %d...", zips, allzip, allhgt);
+    if (!zips) {
+        msg += "nothing to do...";
+        outLog(msg);
+        return;
+    }
+    if (!allhgt) {
+
+
+    }
+    bool m_User_Break = false;
+    outLog(msg);
+    bool do_wait = b_confirm;
+    int wait_secs = 5;
+    int i, max = m_zipList.size();
+    int done = 0;
+    for (i = 0; i < max; i++) {
+        if (m_User_Break)
+            break;
+        // do_wait = (skip_cfm ? false : true);
+        msg.sprintf("%d of %d: ", (i + 1), max);
+        argument = runtime;
+        argument += " ";
+        file = m_zipList[i];
+        outhgt = m_outList[i];
+        argument += file;
+        outLog(msg + "Unziping file [" + file + "] with arg [" + argument + "]");
+
+        // YUK, 'unzip' may need params to overwrite existing,
+        // but that gets complicated, so...
+        int ext = tg_renameToOLDBAK(outhgt); // rename any exsiting
+        info = tg_runProcess(argument, m_srtmDir, &res);
+        tg_trimLongMessage(m_MaxDiag, info);
+        info += "\nFile " + file + " ";
+        if (f.exists(outhgt)) {
+            // got created
+            info += "got " + outhgt;
+            done++;
+        }
+        else {
+            //if (!ign_errors)
+            do_wait = true;
+            info += "failed " + outhgt;
+        }
+        info += "\n";
+        outLog(info);
+        if (do_wait) {
+            if ((i + 1) < max) {
+                info += msg + "Continue with next dunzip?";
+                res = util_getYesNo("DO UNZIP", info, this);
+                if (!res)
+                    return; // down hgt - done one, but no cfm to proceeed
+            }
+        }
+        else {
+            tg_openNonModalDialog("DONE UNZIP", info, wait_secs, this);
+        }
+    }
+    //////////////////////////////////////////////////
+    // finished
+    msg.sprintf("Unzipped %d, of %d", done, max);
+    outLog(msg);
+
+    update_information();
+
 }
 
 /* 
